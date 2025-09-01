@@ -1,0 +1,133 @@
+# Imports
+import numpy as np
+import matplotlib.pyplot as plt
+
+# -----------------------
+# 1D Linear Function
+# -----------------------
+def linear_function_1D(x, beta, omega):
+    return beta + omega * x
+
+# Example plot
+x = np.arange(0.0, 10.0, 0.01)
+beta, omega = 0.0, 1.0
+y = linear_function_1D(x, beta, omega)
+
+plt.plot(x, y, 'r-')
+plt.xlabel('x'); plt.ylabel('y')
+plt.show()
+
+# Experiment: line crossing y=10, x=5 (beta=10, omega=-2)
+x = np.arange(-5, 10, 0.01)
+y = linear_function_1D(x, 10, -2)
+plt.plot(x, y, 'r-')
+plt.axhline(0, ls='--'); plt.axvline(0, ls='--')
+plt.show()
+
+
+# -----------------------
+# 2D Linear Function
+# -----------------------
+def draw_2D_function(x1_mesh, x2_mesh, y):
+    fig, ax = plt.subplots()
+    pos = ax.contourf(x1_mesh, x2_mesh, y, levels=256, cmap='hot', vmin=-10, vmax=10)
+    fig.colorbar(pos, ax=ax)
+    ax.contour(x1_mesh, x2_mesh, y, np.arange(-10,10,1), cmap='winter')
+    plt.show()
+
+def linear_function_2D(x1, x2, beta, omega1, omega2):
+    return beta + omega1 * x1 + omega2 * x2
+
+x1 = np.arange(0.0, 10.0, 0.1)
+x2 = np.arange(0.0, 10.0, 0.1)
+x1, x2 = np.meshgrid(x1, x2)
+y = linear_function_2D(x1, x2, 0.0, 1.0, -0.5)
+draw_2D_function(x1, x2, y)
+
+# Experiments:
+y = linear_function_2D(x1, x2, 0.0, 0.0, -0.5)   # omega1=0
+draw_2D_function(x1, x2, y)
+
+y = linear_function_2D(x1, x2, 0.0, 1.0, 0.0)   # omega2=0
+draw_2D_function(x1, x2, y)
+
+y = linear_function_2D(x1, x2, -5.0, 1.0, -0.5) # beta=-5
+draw_2D_function(x1, x2, y)
+
+
+# -----------------------
+# 3D Linear Function + Matrix Form
+# -----------------------
+def linear_function_3D(x1, x2, x3, beta, w1, w2, w3):
+    return beta + w1*x1 + w2*x2 + w3*x3
+
+beta1, beta2 = 0.5, 0.2
+w11, w12, w13 = -1.0, 0.4, -0.3
+w21, w22, w23 = 0.1, 0.1, 1.2
+x1, x2, x3 = 4, -1, 2
+
+# Individual
+y1 = linear_function_3D(x1,x2,x3,beta1,w11,w12,w13)
+y2 = linear_function_3D(x1,x2,x3,beta2,w21,w22,w23)
+print("Individual:", y1, y2)
+
+# Matrix/vector form
+beta_vec = np.array([[beta1],[beta2]])
+omega_mat = np.array([[w11,w12,w13],[w21,w22,w23]])
+x_vec = np.array([[x1],[x2],[x3]])
+y_vec = beta_vec + omega_mat @ x_vec
+print("Matrix form:", y_vec)
+
+# Answer: At (0,0,0), y = beta
+
+
+# -----------------------
+# 3 Linear Equations with 2 Inputs
+# -----------------------
+betas = np.array([[0.3],[1.0],[-0.5]])
+O = np.array([[1.2,-0.7],[-0.4,0.9],[0.8,0.1]])
+x = np.array([[2.0],[3.0]])
+
+# Scalar
+y_scalar = []
+for i in range(3):
+    y_scalar.append(betas[i,0] + O[i,0]*x[0,0] + O[i,1]*x[1,0])
+print("Scalar:", y_scalar)
+
+# Matrix
+print("Matrix:", betas + O @ x)
+
+
+# -----------------------
+# Exponential Function
+# -----------------------
+x = np.arange(-5,5,0.01)
+y = np.exp(x)
+plt.plot(x,y,'r-'); plt.ylim(0,100); plt.xlim(-5,5)
+plt.show()
+
+# Answers:
+# exp(0) = 1
+# exp(1) = e ≈ 2.718
+# exp(-1) = 1/e ≈ 0.3679
+# exp(-∞) = 0
+# exp(+∞) = ∞
+# Convex (exp''(x) > 0)
+
+
+# -----------------------
+# Logarithm Function
+# -----------------------
+x = np.arange(0.01,5,0.01)
+y = np.log(x)
+plt.plot(x,y,'r-'); plt.ylim(-5,5); plt.xlim(0,5)
+plt.show()
+
+# Answers:
+# log(0) = undefined (→ -∞)
+# log(1) = 0
+# log(e) = 1
+# log(exp(3)) = 3
+# exp(log(4)) = 4
+# log(-1) = undefined in reals (complex in C)
+# Concave (log''(x) = -1/x^2 < 0)
